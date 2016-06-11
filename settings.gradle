@@ -1,0 +1,3 @@
+include 'org.s23m.cell.persistence'
+
+project(':org.s23m.cell.persistence').name = 'persistence' 

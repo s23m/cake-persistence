@@ -1,0 +1,175 @@
+/*
+ * External dependencies for the build script: 
+ * https://docs.gradle.org/current/userguide/organizing_build_logic.html#sec:external_dependencies
+ */
+
+buildscript {
+  repositories {
+    jcenter()
+  }
+  dependencies {
+    classpath(group: 'org.jfrog.buildinfo', name: 'build-info-extractor-gradle', version: '4.0.0')
+  }
+}
+
+/* Artifactory plugin and settings */
+
+def localArtifactoryMode = "${artifactory_mode}" == "local"
+def remoteArtifactoryMode = "${artifactory_mode}" == "remote"
+
+if (!localArtifactoryMode && !remoteArtifactoryMode)
+  ant.fail("Invalid Artifactory mode '${artifactory_mode}'. Only 'local' and 'remote' is allowed.")
+
+if (remoteArtifactoryMode) {
+  if (!project.hasProperty('artifactory_remote_url'))
+    ant.fail("Remote Artifactory URL (artifactory_remote_url) was not provided")
+  if (!project.hasProperty('artifactory_remote_username'))
+    ant.fail("Remote Artifactory username (artifactory_remote_username) was not provided")
+  if (!project.hasProperty('artifactory_remote_password'))
+    ant.fail("Remote Artifactory password (artifactory_remote_password) was not provided")
+}
+
+println "Artifactory mode: ${artifactory_mode}"
+
+def artifactoryUrl = localArtifactoryMode ? "${artifactory_local_url}" : "${artifactory_remote_url}"
+def artifactoryUsername = localArtifactoryMode ? "${artifactory_local_username}" : "${artifactory_remote_username}"
+def artifactoryPassword = localArtifactoryMode ? "${artifactory_local_password}" : "${artifactory_remote_password}"
+
+println "Artifactory URL: ${artifactoryUrl}"
+
+allprojects {
+  apply plugin: 'com.jfrog.artifactory'
+}
+
+// skip publishing the root module
+artifactoryPublish.skip = true
+
+artifactory {
+  
+  contextUrl = artifactoryUrl
+  
+  clientConfig.setIncludeEnvVars(false)
+  
+  publish {
+    repository {
+      // determine the Artifactory repository key to publish to
+      repoKey = version.endsWith('-SNAPSHOT') ? 'libs-snapshot-local' : 'libs-release-local'
+      username = artifactoryUsername
+      password = artifactoryPassword
+    }
+    defaults {
+      // Reference to Gradle publications defined in the build script.
+      // This is how we tell the Artifactory Plugin which artifacts should be
+      // published to Artifactory.
+      publications('mavenJava')
+      publishArtifacts = true
+      
+      publishPom = true // Publish generated POM files to Artifactory (true by default)
+      publishIvy = false // Publish generated Ivy descriptor files to Artifactory (true by default)
+    }
+  }
+}
+
+/* Shared settings for all subprojects */
+
+subprojects {
+  apply plugin: 'java'
+  apply plugin: 'jacoco'
+  apply plugin: 'findbugs'
+  apply plugin: 'pmd'
+  apply plugin: 'maven-publish'
+
+  sourceCompatibility = 1.8
+  targetCompatibility = 1.8
+
+  group = 'org.s23m.cell'
+  status = 'Integration'
+
+  repositories {
+    // Maven central dependency for resolving JUnit
+    mavenCentral()
+    
+    // Maven repository - snapshots
+    maven {
+        url = "${artifactoryUrl}/libs-snapshot-local"
+    }
+    
+    // Maven repository - releases
+    maven {
+        url = "${artifactoryUrl}/libs-release-local"
+    }
+  }
+  
+  dependencies {
+    testCompile 'junit:junit:4.12'
+  }
+  
+  publishing {
+    publications {
+      mavenJava(MavenPublication) {
+        from components.java
+        artifact(file("$rootDir/gradle.properties"))
+      }
+    }
+  }
+
+  /* JaCoCo */
+ 
+  jacoco {
+    toolVersion = '0.7.6.201602180812'
+  }
+  
+  jacocoTestReport {
+    reports {
+      xml.enabled true
+      html.destination file("$buildDir/reports/jacoco-html")
+    }
+  }
+  
+  check.dependsOn jacocoTestReport
+ 
+  /* Findbugs */
+  
+  findbugs {
+    ignoreFailures = true
+  }
+  
+  tasks.withType(FindBugs) {
+    reports {
+      xml.enabled false
+      html.enabled true
+    }
+  }
+ 
+  /* PMD */
+
+  pmd {
+    ignoreFailures = true
+    reportsDir = file("$buildDir/reports/pmd")
+    ruleSets = ['java-basic', 'java-braces']
+  }
+  
+  /* Tests */
+  
+  test {
+    reports {
+      junitXml.enabled true
+      junitXml.destination = file("$buildDir/reports/junit-xml")
+      html.enabled true
+      html.destination = file("$buildDir/reports/junit-html")
+    }
+  }
+  
+  tasks.withType(Test) {
+    maxHeapSize = '512m'
+    
+    // Run tests in parallel. Use a maximum of 4 threads (to match Circle CI "max parallelism")
+    maxParallelForks = 4
+  }
+}
+
+project(':persistence') {
+  dependencies {
+    compile 'org.s23m.cell:kernel:0.1.0-SNAPSHOT'
+  }
+}
