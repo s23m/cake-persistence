@@ -1,5 +1,5 @@
 /*
- * External dependencies for the build script: 
+ * External dependencies for the build script:
  * https://docs.gradle.org/current/userguide/organizing_build_logic.html#sec:external_dependencies
  */
 
@@ -34,9 +34,9 @@ println "Artifactory mode: ${artifactory_mode}"
 def artifactoryUrl = localArtifactoryMode ? "${artifactory_local_url}" : "${artifactory_remote_url}"
 def artifactoryUsername = localArtifactoryMode ? "${artifactory_local_username}" : "${artifactory_remote_username}"
 def artifactoryPassword = localArtifactoryMode ? "${artifactory_local_password}" : "${artifactory_remote_password}"
-def snapshotRepoKey = localArtifactoryMode ? 'libs-snapshot-local' : 'oss-snapshot-local';
-def releaseRepoKey = localArtifactoryMode ? 'libs-release-local' : 'oss-release-local';
-  
+def snapshotRepoKey = localArtifactoryMode ? 'libs-snapshot-local' : 'oss-snapshot-local'
+def releaseRepoKey = localArtifactoryMode ? 'libs-release-local' : 'oss-release-local'
+
 println "Artifactory URL: ${artifactoryUrl}"
 
 allprojects {
@@ -47,11 +47,11 @@ allprojects {
 artifactoryPublish.skip = true
 
 artifactory {
-  
+
   contextUrl = artifactoryUrl
-  
+
   clientConfig.setIncludeEnvVars(false)
-  
+
   publish {
     repository {
       // determine the Artifactory repository key to publish to
@@ -65,7 +65,7 @@ artifactory {
       // published to Artifactory.
       publications('mavenJava')
       publishArtifacts = true
-      
+
       publishPom = true // Publish generated POM files to Artifactory (true by default)
       publishIvy = false // Publish generated Ivy descriptor files to Artifactory (true by default)
     }
@@ -90,22 +90,22 @@ subprojects {
   repositories {
     // Maven central dependency for resolving JUnit
     mavenCentral()
-    
+
     // Maven repository - snapshots
     maven {
         url = "${artifactoryUrl}/${snapshotRepoKey}"
     }
-    
+
     // Maven repository - releases
     maven {
         url = "${artifactoryUrl}/${releaseRepoKey}"
     }
   }
-  
+
   dependencies {
     testCompile 'junit:junit:4.12'
   }
-  
+
   publishing {
     publications {
       mavenJava(MavenPublication) {
@@ -116,33 +116,33 @@ subprojects {
   }
 
   /* JaCoCo */
- 
+
   jacoco {
     toolVersion = '0.7.6.201602180812'
   }
-  
+
   jacocoTestReport {
     reports {
       xml.enabled true
       html.destination file("$buildDir/reports/jacoco-html")
     }
   }
-  
+
   check.dependsOn jacocoTestReport
- 
+
   /* Findbugs */
-  
+
   findbugs {
     ignoreFailures = true
   }
-  
+
   tasks.withType(FindBugs) {
     reports {
       xml.enabled false
       html.enabled true
     }
   }
- 
+
   /* PMD */
 
   pmd {
@@ -150,9 +150,9 @@ subprojects {
     reportsDir = file("$buildDir/reports/pmd")
     ruleSets = ['java-basic', 'java-braces']
   }
-  
+
   /* Tests */
-  
+
   test {
     reports {
       junitXml.enabled true
@@ -161,12 +161,29 @@ subprojects {
       html.destination = file("$buildDir/reports/junit-html")
     }
   }
-  
+
   tasks.withType(Test) {
     maxHeapSize = '512m'
-    
+
     // Run tests in parallel. Use a maximum of 4 threads (to match Circle CI "max parallelism")
     maxParallelForks = 4
+  }
+}
+
+/* Task to consolidate reports for all sub-projects */
+
+task consolidateReports {
+
+  doLast {
+    childProjects.keySet().each {
+      def source = childProjects.get(it).reportsDir
+      def name = it
+      copy {
+        from source
+        include '**/*'
+        into "$buildDir/reports/$name"
+      }
+    }
   }
 }
 
