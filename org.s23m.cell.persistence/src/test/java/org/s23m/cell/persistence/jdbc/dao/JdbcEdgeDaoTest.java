@@ -28,13 +28,13 @@ public class JdbcEdgeDaoTest extends AbstractJdbcTest {
 		final Arrow arrow = createArrow(uuid, ProperClass.Visibility);
 		final Edge edge = createEdge(uuid);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
-		arrowDao.insert(arrow);
-		edgeDao.insert(edge);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
+		getArrowDao().insert(arrow);
+		getEdgeDao().insert(edge);
 
 		// now retrieve the result
-		final Edge retrieved = edgeDao.get(edge.getUrr());
+		final Edge retrieved = getEdgeDao().get(edge.getUrr());
 		assertEquals(edge, retrieved);
 		assertEquals(edge.hashCode(), retrieved.hashCode());
 	}
@@ -48,13 +48,13 @@ public class JdbcEdgeDaoTest extends AbstractJdbcTest {
 		final Arrow arrow = createArrow(uuid, ProperClass.Visibility);
 		final Edge edge = createEdge(uuid);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
-		arrowDao.insert(arrow);
-		edgeDao.insert(edge);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
+		getArrowDao().insert(arrow);
+		getEdgeDao().insert(edge);
 
 		try {
-			edgeDao.insert(edge);
+			getEdgeDao().insert(edge);
 			fail("Multiple inserts should be disallowed");
 		} catch (final RuntimeException e) {
 			// expected
@@ -70,19 +70,19 @@ public class JdbcEdgeDaoTest extends AbstractJdbcTest {
 		final Arrow arrow = createArrow(uuid, ProperClass.Visibility);
 		final Edge edge = createEdge(uuid);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
-		arrowDao.insert(arrow);
-		edgeDao.insert(edge);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
+		getArrowDao().insert(arrow);
+		getEdgeDao().insert(edge);
 
 		// now retrieve the result
-		final Edge retrieved1 = edgeDao.get(uuid);
+		final Edge retrieved1 = getEdgeDao().get(uuid);
 		assertEquals(uuid, retrieved1.getIsNavigableValueToEdgeEnd());
 
 		// store another identity
 		final String uuid2 = "2";
 		final Identity identity2 = createIdentity(uuid2);
-		identityDao.insert(identity2);
+		getIdentityDao().insert(identity2);
 
 		// modify edge property and update
 		final Edge modified = new Edge(edge.getUrr(), edge.getMinCardinalityValueFromEdgeEnd(), edge.getMinCardinalityValueToEdgeEnd(),
@@ -90,9 +90,9 @@ public class JdbcEdgeDaoTest extends AbstractJdbcTest {
 				edge.getIsNavigableValueFromEdgeEnd(), uuid2, edge.getIsContainerValueFromEdgeEnd(),
 				edge.getIsContainerValueToEdgeEnd(), edge.getFromEdgeEnd(), edge.getToEdgeEnd());
 
-		edgeDao.update(modified);
+		getEdgeDao().update(modified);
 
-		final Edge retrieved2 = edgeDao.get(uuid);
+		final Edge retrieved2 = getEdgeDao().get(uuid);
 		assertEquals(uuid2, retrieved2.getIsNavigableValueToEdgeEnd());
 	}
 
@@ -105,10 +105,10 @@ public class JdbcEdgeDaoTest extends AbstractJdbcTest {
 		final Arrow arrow = createArrow(uuid, ProperClass.Visibility);
 		final Edge edge = createEdge(uuid);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
-		arrowDao.insert(arrow);
-		edgeDao.insert(edge);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
+		getArrowDao().insert(arrow);
+		getEdgeDao().insert(edge);
 
 		try {
 			// violate foreign key by pointing to a non-existent identity UUID
@@ -117,7 +117,7 @@ public class JdbcEdgeDaoTest extends AbstractJdbcTest {
 					edge.getIsNavigableValueFromEdgeEnd(), edge.getIsNavigableValueToEdgeEnd(), "2",
 					edge.getIsContainerValueToEdgeEnd(), edge.getFromEdgeEnd(), edge.getToEdgeEnd());
 
-			edgeDao.update(modified);
+			getEdgeDao().update(modified);
 			fail("Violation should have thrown an exception");
 		} catch (final RuntimeException e) {
 			// expected

@@ -22,10 +22,10 @@ public class JdbcGraphDaoTest extends AbstractJdbcTest {
 		final Identity identity = createIdentity(uuid);
 		final Graph graph = createGraph(uuid, ProperClass.Vertex);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
 
-		final Graph retrieved = graphDao.get(graph.getUrr());
+		final Graph retrieved = getGraphDao().get(graph.getUrr());
 		assertEquals(graph, retrieved);
 		assertEquals(graph.hashCode(), retrieved.hashCode());
 	}
@@ -36,11 +36,11 @@ public class JdbcGraphDaoTest extends AbstractJdbcTest {
 		final Identity identity = createIdentity(uuid);
 		final Graph graph = createGraph(uuid, ProperClass.Vertex);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
 
 		try {
-			graphDao.insert(graph);
+			getGraphDao().insert(graph);
 			fail("Multiple inserts should be disallowed");
 		} catch (final RuntimeException e) {
 			// expected
@@ -54,23 +54,23 @@ public class JdbcGraphDaoTest extends AbstractJdbcTest {
 		final Identity identity = createIdentity(uuid);
 		final Graph graph = createGraph(uuid, ProperClass.Vertex);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
 
 		// retrieve the result
-		final Graph retrieved1 = graphDao.get(uuid);
+		final Graph retrieved1 = getGraphDao().get(uuid);
 		assertEquals(uuid, retrieved1.getContainer());
 
 		// store another identity
 		final String uuid2 = "2";
 		final Identity identity2 = createIdentity(uuid2);
-		identityDao.insert(identity2);
+		getIdentityDao().insert(identity2);
 
 		// modify property and update
 		final Graph modified = new Graph(graph.getUrr(), graph.getUuid(), graph.getCategory(), uuid2, graph.getIsAbstractValue(), graph.getProperClass(), graph.getMaxCardinalityValueInContainer(), graph.getContentAsXml());
-		graphDao.update(modified);
+		getGraphDao().update(modified);
 
-		final Graph retrieved2 = graphDao.get(uuid);
+		final Graph retrieved2 = getGraphDao().get(uuid);
 		assertEquals(uuid2, retrieved2.getContainer());
 	}
 
@@ -81,13 +81,13 @@ public class JdbcGraphDaoTest extends AbstractJdbcTest {
 		final Identity identity = createIdentity(uuid);
 		final Graph graph = createGraph(uuid, ProperClass.Vertex);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
 
 		try {
 			// violate foreign key by pointing to a non-existent identity UUID
 			final Graph modified = new Graph(graph.getUrr(), graph.getUuid(), "2", graph.getContainer(), graph.getIsAbstractValue(), graph.getProperClass(), graph.getMaxCardinalityValueInContainer(), graph.getContentAsXml());
-			graphDao.update(modified);
+			getGraphDao().update(modified);
 			fail("Violation should have thrown an exception");
 		} catch (final RuntimeException e) {
 			// expected

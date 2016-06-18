@@ -19,10 +19,10 @@ public class JdbcIdentityDaoTest extends AbstractJdbcTest {
 	public void testInsertionAndRetrieval() throws SQLException {
 		final Identity identity = createIdentity(UUID.randomUUID().toString());
 
-		identityDao.insert(identity);
+		getIdentityDao().insert(identity);
 
 		// now retrieve the result
-		final Identity retrieved = identityDao.get(identity.getUuid());
+		final Identity retrieved = getIdentityDao().get(identity.getUuid());
 		assertEquals(identity, retrieved);
 		assertEquals(identity.hashCode(), retrieved.hashCode());
 	}
@@ -32,10 +32,10 @@ public class JdbcIdentityDaoTest extends AbstractJdbcTest {
 		final String uuid = UUID.randomUUID().toString();
 		final Identity identity = createIdentity(uuid);
 
-		identityDao.insert(identity);
+		getIdentityDao().insert(identity);
 
 		try {
-			identityDao.insert(identity);
+			getIdentityDao().insert(identity);
 			fail("Multiple inserts should be disallowed");
 		} catch (final RuntimeException e) {
 			// expected
@@ -48,18 +48,18 @@ public class JdbcIdentityDaoTest extends AbstractJdbcTest {
 
 		final Identity identity = createIdentity(uuid);
 
-		identityDao.insert(identity);
+		getIdentityDao().insert(identity);
 
 		// retrieve the result
-		final Identity retrieved1 = identityDao.get(uuid);
+		final Identity retrieved1 = getIdentityDao().get(uuid);
 		assertEquals(uuid, retrieved1.getUuid());
 
 		// update the name
 		final Identity modified = new Identity(identity.getUuid(), "changed name", identity.getPluralName(),
 				identity.getCodeName(), identity.getPluralCodeName(), identity.getPayload());
-		identityDao.update(modified);
+		getIdentityDao().update(modified);
 
-		final Identity retrieved2 = identityDao.get(uuid);
+		final Identity retrieved2 = getIdentityDao().get(uuid);
 		assertEquals(modified.getName(), retrieved2.getName());
 	}
 
@@ -71,7 +71,7 @@ public class JdbcIdentityDaoTest extends AbstractJdbcTest {
 		final Identity identity = new Identity("uuid", longName, "pluralName", "codeName", "pluralCodeName", "payload");
 
 		try {
-			identityDao.insert(identity);
+			getIdentityDao().insert(identity);
 			fail("Violating length should cause an exception");
 		} catch (final IllegalArgumentException e) {
 			assertEquals("Identity name is invalid (exceeds length limit of 100)", e.getMessage());

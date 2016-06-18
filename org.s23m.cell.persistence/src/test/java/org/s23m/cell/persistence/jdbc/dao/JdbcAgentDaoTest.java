@@ -22,11 +22,11 @@ public class JdbcAgentDaoTest extends AbstractJdbcTest {
 		final Identity identity = createIdentity(uuid);
 		final Agent agent = createAgent(uuid);
 
-		identityDao.insert(identity);
-		agentDao.insert(agent);
+		getIdentityDao().insert(identity);
+		getAgentDao().insert(agent);
 
 		// now retrieve the result
-		final Agent retrieved = agentDao.get(agent.getUrr());
+		final Agent retrieved = getAgentDao().get(agent.getUrr());
 		assertEquals(agent, retrieved);
 		assertEquals(agent.hashCode(), retrieved.hashCode());
 	}
@@ -38,11 +38,11 @@ public class JdbcAgentDaoTest extends AbstractJdbcTest {
 		final Identity identity = createIdentity(uuid);
 		final Agent agent = createAgent(uuid);
 
-		identityDao.insert(identity);
-		agentDao.insert(agent);
+		getIdentityDao().insert(identity);
+		getAgentDao().insert(agent);
 
 		try {
-			agentDao.insert(agent);
+			getAgentDao().insert(agent);
 			fail("Multiple inserts should be disallowed");
 		} catch (final RuntimeException e) {
 			// expected
@@ -57,18 +57,18 @@ public class JdbcAgentDaoTest extends AbstractJdbcTest {
 		final Agent agent = createAgent(uuid);
 		final String urr = agent.getUrr();
 
-		identityDao.insert(identity);
-		agentDao.insert(agent);
+		getIdentityDao().insert(identity);
+		getAgentDao().insert(agent);
 
 		// now retrieve the result
-		final Agent a = agentDao.get(urr);
+		final Agent a = getAgentDao().get(urr);
 
 		// modify name and update
 		final String newName = "Bobby";
 		final Agent modified = new Agent(urr, uuid, a.getEmail(), a.getPassword(), a.getMobile(), newName, a.getLastName(), a.getAlias());
-		agentDao.update(modified);
+		getAgentDao().update(modified);
 
-		final Agent b = agentDao.get(urr);
+		final Agent b = getAgentDao().get(urr);
 		assertEquals(newName, b.getFirstName());
 	}
 
@@ -79,14 +79,14 @@ public class JdbcAgentDaoTest extends AbstractJdbcTest {
 		final Identity identity = createIdentity(uuid);
 		final Agent a = createAgent(uuid);
 
-		identityDao.insert(identity);
-		agentDao.insert(a);
+		getIdentityDao().insert(identity);
+		getAgentDao().insert(a);
 
 		try {
 			// violate foreign key by pointing to a non-existent identity UUID
 			final Agent modified = new Agent(uuid, "non-existent", a.getEmail(), a.getPassword(), a.getMobile(), a.getFirstName(), a.getLastName(), a.getAlias());
 
-			agentDao.update(modified);
+			getAgentDao().update(modified);
 			fail("Violation should have thrown an exception");
 		} catch (final RuntimeException e) {
 			// expected

@@ -26,12 +26,12 @@ public class JdbcArrowDaoTest extends AbstractJdbcTest {
 		final Graph graph = createGraph(uuid, ProperClass.Vertex);
 		final Arrow arrow = createArrow(uuid, ProperClass.Edge);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
-		arrowDao.insert(arrow);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
+		getArrowDao().insert(arrow);
 
 		// now retrieve the result
-		final Arrow retrieved = arrowDao.get(arrow.getUrr());
+		final Arrow retrieved = getArrowDao().get(arrow.getUrr());
 		assertEquals(arrow, retrieved);
 		assertEquals(arrow.hashCode(), retrieved.hashCode());
 	}
@@ -44,12 +44,12 @@ public class JdbcArrowDaoTest extends AbstractJdbcTest {
 		final Graph graph = createGraph(uuid, ProperClass.Vertex);
 		final Arrow result = createArrow(uuid, ProperClass.Edge);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
-		arrowDao.insert(result);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
+		getArrowDao().insert(result);
 
 		try {
-			arrowDao.insert(result);
+			getArrowDao().insert(result);
 			fail("Multiple inserts should be disallowed");
 		} catch (final RuntimeException e) {
 			// expected
@@ -65,19 +65,19 @@ public class JdbcArrowDaoTest extends AbstractJdbcTest {
 		final Arrow arrow = createArrow(uuid, ProperClass.Visibility);
 		final String urr = arrow.getUrr();
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
-		arrowDao.insert(arrow);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
+		getArrowDao().insert(arrow);
 
 		// now retrieve the result
-		final Arrow retrieved1 = arrowDao.get(urr);
+		final Arrow retrieved1 = getArrowDao().get(urr);
 		assertEquals(ProperClass.Visibility, retrieved1.getProperClass());
 
 		// modify proper class and update
 		final Arrow modified = new Arrow(arrow.getUrr(), arrow.getCategory(), ProperClass.Edge, arrow.getFromGraph(), arrow.getToGraph());
-		arrowDao.update(modified);
+		getArrowDao().update(modified);
 
-		final Arrow retrieved2 = arrowDao.get(urr);
+		final Arrow retrieved2 = getArrowDao().get(urr);
 		assertEquals(ProperClass.Edge, retrieved2.getProperClass());
 	}
 
@@ -95,15 +95,15 @@ public class JdbcArrowDaoTest extends AbstractJdbcTest {
 		final Graph graph = createGraph(uuid, ProperClass.Vertex);
 		final Arrow arrow = createArrow(uuid, ProperClass.Edge);
 
-		identityDao.insert(identity);
-		graphDao.insert(graph);
-		arrowDao.insert(arrow);
+		getIdentityDao().insert(identity);
+		getGraphDao().insert(graph);
+		getArrowDao().insert(arrow);
 
 		try {
 			// violate foreign key by pointing to a non-existent graph UUID
 			final Arrow modified = new Arrow(arrow.getUrr(), arrow.getCategory(), arrow.getProperClass(), "nonexistent", arrow.getToGraph());
 
-			arrowDao.update(modified);
+			getArrowDao().update(modified);
 			fail("Violation should have thrown an exception");
 		} catch (final RuntimeException e) {
 			// expected

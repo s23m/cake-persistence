@@ -188,5 +188,7 @@ task consolidateReports {
 project(':persistence') {
   dependencies {
     compile 'org.s23m.cell:kernel:0.1.0-SNAPSHOT'
+    compile 'org.s23m.cell:platform:0.1.0-SNAPSHOT'
+    testCompile 'org.s23m.cell:platform-instantiation:0.1.0-SNAPSHOT'
   }
 }

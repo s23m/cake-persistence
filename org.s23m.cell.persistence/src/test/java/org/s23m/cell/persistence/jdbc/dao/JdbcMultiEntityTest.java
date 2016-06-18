@@ -62,7 +62,7 @@ public class JdbcMultiEntityTest extends AbstractJdbcTest {
 	}
 
 	private Long executeCountQuery(final String sql) throws SQLException {
-		final Connection connection = dataSource.getConnection();
+		final Connection connection = getConnection();
 		final Statement statement = connection.createStatement();
 		final ResultSet resultSet = statement.executeQuery(sql);
 		resultSet.next();
@@ -74,7 +74,7 @@ public class JdbcMultiEntityTest extends AbstractJdbcTest {
 	private Identity createAndSaveIdentity() {
 		final String uuid = generateUUID();
 		final Identity identity = createIdentity(uuid);
-		identityDao.insert(identity);
+		getIdentityDao().insert(identity);
 		return identity;
 	}
 
@@ -90,7 +90,7 @@ public class JdbcMultiEntityTest extends AbstractJdbcTest {
 
 		final Graph graph = new Graph(urr, uuid, category, container, isAbstractValue, properClass, maxCardinalityValueInContainer, contentAsXml);
 
-		graphDao.insert(graph);
+		getGraphDao().insert(graph);
 
 		return graph;
 	}
@@ -103,7 +103,7 @@ public class JdbcMultiEntityTest extends AbstractJdbcTest {
 
 		final Arrow arrow = new Arrow(urr, category, ProperClass.Visibility, fromGraph, toGraph);
 
-		arrowDao.insert(arrow);
+		getArrowDao().insert(arrow);
 
 		return arrow;
 	}
@@ -114,7 +114,7 @@ public class JdbcMultiEntityTest extends AbstractJdbcTest {
 
 		final Agent agent = new Agent(urr, uuid, "email", "password", "mobile", "firstName", "lastName", "alias");
 
-		agentDao.insert(agent);
+		getAgentDao().insert(agent);
 
 		return agent;
 	}
@@ -138,7 +138,7 @@ public class JdbcMultiEntityTest extends AbstractJdbcTest {
 				isNavigableValueFromEdgeEnd, isNavigableValueToEdgeEnd, isContainerValueFromEdgeEnd,
 				isContainerValueToEdgeEnd, fromEdgeEnd, toEdgeEnd);
 
-		edgeDao.insert(edge);
+		getEdgeDao().insert(edge);
 
 		return edge;
 	}

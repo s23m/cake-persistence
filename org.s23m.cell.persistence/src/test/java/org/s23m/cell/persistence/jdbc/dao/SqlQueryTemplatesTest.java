@@ -2,6 +2,7 @@ package org.s23m.cell.persistence.jdbc.dao;
 
 import junit.framework.TestCase;
 
+import org.s23m.cell.persistence.dao.jdbc.SqlQueryTemplates;
 import org.s23m.cell.persistence.model.Identity;
 
 public class SqlQueryTemplatesTest extends TestCase {

@@ -1,4 +1,4 @@
-package org.s23m.cell.persistence.jdbc.dao;
+package org.s23m.cell.persistence.dao.jdbc;
 
 import java.util.Arrays;
 import java.util.Collections;

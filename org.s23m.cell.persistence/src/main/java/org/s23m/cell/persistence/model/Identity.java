@@ -24,6 +24,21 @@ public final class Identity {
 	/**
 	 * Constructor
 	 *
+	 * @param identity
+	 */
+	public Identity(final org.s23m.cell.Identity identity) {
+		this.uuid = Objects.requireNonNull(identity.identifier().toString(), "uuid must not be null");
+		this.name = Objects.requireNonNull(identity.name(), "name must not be null");
+		this.pluralName = Objects.requireNonNull(identity.pluralName(), "pluralName must not be null");
+		this.codeName = identity.codeName();
+		this.pluralCodeName = identity.pluralCodeName();
+		this.payload = identity.payload();
+	}
+
+
+	/**
+	 * Constructor
+	 *
 	 * @param uuid
 	 * @param name
 	 * @param pluralName
