@@ -7,10 +7,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
 
-import org.s23m.cell.Set;
 import org.s23m.cell.persistence.dao.jdbc.JdbcIdentityDao;
 import org.s23m.cell.persistence.jdbc.dao.JdbcTestSupport;
 import org.s23m.cell.persistence.model.Identity;
@@ -18,8 +15,6 @@ import org.s23m.cell.platform.api.AgencyTestFoundationTestCase;
 import org.s23m.cell.platform.testfoundation.AgencyTestFoundation;
 
 public class JdbcPersistenceServiceTest extends AgencyTestFoundationTestCase {
-
-	private final List<Set> exampleModels = new ArrayList<Set>();
 
 	private final JdbcTestSupport support;
 
@@ -29,11 +24,6 @@ public class JdbcPersistenceServiceTest extends AgencyTestFoundationTestCase {
 
 	@Override
 	protected void doAdditionalSetup() {
-		// only instances of Agents or any of their contained models ever need to be serialised
-		// ithanku is an example of an instance of an Agent.
-		exampleModels.add(AgencyTestFoundation.ithanku);
-		exampleModels.add(AgencyTestFoundation.ernst);
-
 		try {
 			support.initialiseTestDatabase(getClass().getSimpleName());
 		} catch (final SQLException e) {
