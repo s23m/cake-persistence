@@ -99,3 +99,13 @@ CREATE TABLE IF NOT EXISTS Edge (
   CONSTRAINT fk_fromEdgeEnd FOREIGN KEY (fromEdgeEnd) REFERENCES graph (urr),
   CONSTRAINT fk_toEdgeEnd FOREIGN KEY (toEdgeEnd) REFERENCES graph (urr)
 );
+
+-- --------------------------------------------------------
+
+CREATE INDEX idx_Identity_name_uuid ON Identity (name, uuid);
+
+CREATE INDEX idx_Graph_uuid_urr ON Graph (uuid, urr);
+
+CREATE INDEX idx_Graph_from_to_properClass_category ON Arrow (fromGraph, toGraph, properClass, category);
+
+CREATE INDEX idx_Graph_to_properClass_category ON Arrow (toGraph, properClass, category);
