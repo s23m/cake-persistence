@@ -76,13 +76,6 @@ public final class Agent {
 		this.mobile = mobile;
 	}
 
-	/**
-	 * Indicates whether a primary key has been assigned to the underlying row.
-	 */
-	public boolean isTransient() {
-		return urr == null;
-	}
-
 	public String getUrr() {
 		return urr;
 	}

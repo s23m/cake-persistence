@@ -74,6 +74,14 @@ public class JdbcGraphDaoTest extends AbstractJdbcTest {
 		assertEquals(uuid2, retrieved2.getContainer());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testAttemptToUpdateNonExistentGraph() throws SQLException {
+		final Graph graph1 = createGraph("1", ProperClass.Vertex);
+		getGraphDao().insert(graph1);
+		final Graph graph2 = createGraph("2", ProperClass.Vertex);
+		getGraphDao().update(graph2);
+	}
+
 	@Test
 	public void testForeignKeyConstraintViolated() {
 		final String uuid = "1";

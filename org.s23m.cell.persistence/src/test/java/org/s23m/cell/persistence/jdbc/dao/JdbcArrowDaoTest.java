@@ -81,6 +81,14 @@ public class JdbcArrowDaoTest extends AbstractJdbcTest {
 		assertEquals(ProperClass.Edge, retrieved2.getProperClass());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testAttemptToUpdateNonExistentArrow() throws SQLException {
+		final Arrow arrow1 = createArrow("1", ProperClass.Edge);
+		getArrowDao().insert(arrow1);
+		final Arrow arrow2 = createArrow("2", ProperClass.Edge);
+		getArrowDao().update(arrow2);
+	}
+
 	@Test(expected = IllegalArgumentException.class)
 	public void testInvalidProperClassSpecified() {
 		final String uuid = UUID.randomUUID().toString();

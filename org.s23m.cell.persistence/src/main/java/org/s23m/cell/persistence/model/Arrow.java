@@ -74,13 +74,6 @@ public final class Arrow {
 		this.toGraph = Objects.requireNonNull(toGraph, "toGraph must not be null");
 	}
 
-	/**
-	 * Indicates whether a primary key has been assigned to the underlying row.
-	 */
-	public boolean isTransient() {
-		return urr == null;
-	}
-
 	public String getUrr() {
 		return urr;
 	}

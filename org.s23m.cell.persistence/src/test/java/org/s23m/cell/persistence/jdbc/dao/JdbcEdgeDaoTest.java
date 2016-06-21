@@ -96,6 +96,14 @@ public class JdbcEdgeDaoTest extends AbstractJdbcTest {
 		assertEquals(uuid2, retrieved2.getIsNavigableValueToEdgeEnd());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testAttemptToUpdateNonExistentEdge() throws SQLException {
+		final Edge edge1 = createEdge("1");
+		getEdgeDao().insert(edge1);
+		final Edge edge2 = createEdge("2");
+		getEdgeDao().update(edge2);
+	}
+
 	@Test
 	public void testForeignKeyConstraintViolated() {
 		final String uuid = "1";

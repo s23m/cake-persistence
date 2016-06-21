@@ -60,12 +60,7 @@ public final class JdbcAgentDao implements AgentDao {
 		try {
 			final int updates = queryRunner.update(INSERT_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided arrow did not have a primary key
-				if (agent.isTransient()) {
-					throw new RuntimeException("Failed to insert Agent - no primary key provided: " + agent);
-				} else {
-					throw new RuntimeException("Failed to insert Agent: " + agent);
-				}
+				throw new RuntimeException("Failed to insert Agent: " + agent);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not insert Agent: " + agent, e);
@@ -79,12 +74,7 @@ public final class JdbcAgentDao implements AgentDao {
 		try {
 			final int updates = queryRunner.update(UPDATE_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided arrow did not have a primary key
-				if (agent.isTransient()) {
-					throw new RuntimeException("Failed to update Agent - no primary key provided: " + agent);
-				} else {
-					throw new RuntimeException("Failed to update Agent: " + agent);
-				}
+				throw new RuntimeException("Failed to update Agent: " + agent);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not update Agent: " + agent, e);

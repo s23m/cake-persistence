@@ -64,12 +64,7 @@ public final class JdbcIdentityDao implements IdentityDao {
 		try {
 			final int updates = queryRunner.update(INSERT_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided identity did not have a primary key
-				if (identity.isTransient()) {
-					throw new RuntimeException("Failed to insert Identity - no primary key provided: " + identity);
-				} else {
-					throw new RuntimeException("Failed to insert Identity: " + identity);
-				}
+				throw new RuntimeException("Failed to insert Identity: " + identity);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not insert Identity: " + identity, e);
@@ -83,12 +78,7 @@ public final class JdbcIdentityDao implements IdentityDao {
 		try {
 			final int updates = queryRunner.update(UPDATE_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided identity did not have a primary key
-				if (identity.isTransient()) {
-					throw new RuntimeException("Failed to update Identity - no primary key provided: " + identity);
-				} else {
-					throw new RuntimeException("Failed to update Identity: " + identity);
-				}
+				throw new RuntimeException("Failed to update Identity: " + identity);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not update Identity: " + identity, e);

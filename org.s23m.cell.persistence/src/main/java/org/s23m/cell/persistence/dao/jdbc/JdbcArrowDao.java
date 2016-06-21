@@ -55,12 +55,7 @@ public final class JdbcArrowDao implements ArrowDao {
 		try {
 			final int updates = queryRunner.update(INSERT_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided arrow did not have a primary key
-				if (arrow.isTransient()) {
-					throw new RuntimeException("Failed to insert Arrow - no primary key provided: " + arrow);
-				} else {
-					throw new RuntimeException("Failed to insert Arrow: " + arrow);
-				}
+				throw new RuntimeException("Failed to insert Arrow - no primary key provided: " + arrow);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not insert Arrow: " + arrow, e);
@@ -74,12 +69,7 @@ public final class JdbcArrowDao implements ArrowDao {
 		try {
 			final int updates = queryRunner.update(UPDATE_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided arrow did not have a primary key
-				if (arrow.isTransient()) {
-					throw new RuntimeException("Failed to update Arrow - no primary key provided: " + arrow);
-				} else {
-					throw new RuntimeException("Failed to update Arrow: " + arrow);
-				}
+				throw new RuntimeException("Failed to update Arrow: " + arrow);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not update Arrow: " + arrow, e);

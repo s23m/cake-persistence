@@ -63,6 +63,14 @@ public class JdbcIdentityDaoTest extends AbstractJdbcTest {
 		assertEquals(modified.getName(), retrieved2.getName());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testAttemptToUpdateNonExistentIdentity() throws SQLException {
+		final Identity identity1 = createIdentity("1");
+		getIdentityDao().insert(identity1);
+		final Identity identity2 = createIdentity("2");
+		getIdentityDao().update(identity2);
+	}
+
 	@Test
 	public void testFieldLengthExceeded() throws SQLException {
 		final Collector<CharSequence, ?, String> commaJoiner = Collectors.joining("");

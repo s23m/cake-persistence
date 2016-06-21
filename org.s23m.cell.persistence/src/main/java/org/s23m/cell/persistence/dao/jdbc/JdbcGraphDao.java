@@ -61,12 +61,7 @@ public final class JdbcGraphDao implements GraphDao {
 		try {
 			final int updates = queryRunner.update(INSERT_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided graph did not have a primary key
-				if (graph.isTransient()) {
-					throw new RuntimeException("Failed to insert Graph - no primary key provided: " + graph);
-				} else {
-					throw new RuntimeException("Failed to insert Graph: " + graph);
-				}
+				throw new RuntimeException("Failed to insert Graph: " + graph);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not insert Graph: " + graph, e);
@@ -80,12 +75,7 @@ public final class JdbcGraphDao implements GraphDao {
 		try {
 			final int updates = queryRunner.update(UPDATE_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided graph did not have a primary key
-				if (graph.isTransient()) {
-					throw new RuntimeException("Failed to update Graph - no primary key provided: " + graph);
-				} else {
-					throw new RuntimeException("Failed to update Graph: " + graph);
-				}
+				throw new RuntimeException("Failed to update Graph: " + graph);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not update Graph: " + graph, e);

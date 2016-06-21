@@ -119,13 +119,6 @@ public final class Edge {
 		this.toEdgeEnd = Objects.requireNonNull(toEdgeEnd, "toEdgeEnd must not be null");
 	}
 
-	/**
-	 * Indicates whether a primary key has been assigned to the underlying row.
-	 */
-	public boolean isTransient() {
-		return urr == null;
-	}
-
 	public String getUrr() {
 		return urr;
 	}

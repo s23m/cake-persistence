@@ -66,12 +66,7 @@ public final class JdbcEdgeDao implements EdgeDao {
 		try {
 			final int updates = queryRunner.update(INSERT_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided edge did not have a primary key
-				if (edge.isTransient()) {
-					throw new RuntimeException("Failed to insert Edge - no primary key provided: " + edge);
-				} else {
-					throw new RuntimeException("Failed to insert Edge: " + edge);
-				}
+				throw new RuntimeException("Failed to insert Edge: " + edge);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not insert Edge: " + edge, e);
@@ -85,12 +80,7 @@ public final class JdbcEdgeDao implements EdgeDao {
 		try {
 			final int updates = queryRunner.update(UPDATE_TEMPLATE, parameters);
 			if (updates != 1) {
-				// failure - check if the provided edge did not have a primary key
-				if (edge.isTransient()) {
-					throw new RuntimeException("Failed to update Edge - no primary key provided: " + edge);
-				} else {
-					throw new RuntimeException("Failed to update Edge: " + edge);
-				}
+				throw new RuntimeException("Failed to update Edge: " + edge);
 			}
 		} catch (final SQLException e) {
 			throw new RuntimeException("Could not update Edge: " + edge, e);

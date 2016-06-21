@@ -56,13 +56,6 @@ public final class Identity {
 		this.payload = payload;
 	}
 
-	/**
-	 * Indicates whether a primary key has been assigned to the underlying row.
-	 */
-	public boolean isTransient() {
-		return uuid == null;
-	}
-
 	public String getUuid() {
 		return uuid;
 	}

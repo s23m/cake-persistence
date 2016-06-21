@@ -72,6 +72,14 @@ public class JdbcAgentDaoTest extends AbstractJdbcTest {
 		assertEquals(newName, b.getFirstName());
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void testAttemptToUpdateNonExistentAgent() throws SQLException {
+		final Agent agent1 = createAgent("1");
+		getAgentDao().insert(agent1);
+		final Agent agent2 = createAgent("2");
+		getAgentDao().update(agent2);
+	}
+
 	@Test
 	public void testForeignKeyConstraintViolated() {
 		final String uuid = UUID.randomUUID().toString();
